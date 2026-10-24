@@ -145,6 +145,3 @@ The current work focuses on selectively recovering and modernizing the most inte
 # Keywords
 
 **Unreal Engine · C++ · Blueprints · Procedural Generation · Perlin Noise · Game Development · Survival Horror · FPS · Samurai · Yokai · Japanese Folklore**
-
-```
-```
