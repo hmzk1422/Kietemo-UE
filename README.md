@@ -1,39 +1,147 @@
-# TACTA-Intelligence
-**Adaptive Physical Intelligence for Training, Simulation, and Defense**
+# Kietemo
 
-TACTA-Intelligence develops proprietary AI-agents designed to operate in complex physical environments under uncertainty, limited conditions, and strict physical constraints. Our core technology combines machine learning, physics-based-simulation, and asynchronous research systems. Rather than relying on predefined responses such as “if the opponent does X, perform Y,” TACTA agents learn to interpret an opponent through geometry, motion, timing, and physical interaction, then generate their own responses.
+```text
+ __   ___   __     _______  ___________  _______  ___      ___     ______    
+|/"| /  ") |" \   /"     "|("     _   ")/"     "||"  \    /"  |   /    " \   
+(: |/   /  ||  | (: ______) )__/  \\__/(: ______) \   \  //   |  // ____  \  
+|    __/   |:  |  \/    |      \\_ /    \/    |   /\\  \/.    | /  /    ) :) 
+(// _  \   |.  |  // ___)_     |.  |    // ___)_ |: \.        |(: (____/ //  
+|: | \  \  /\  |\(:      "|    \:  |   (:      "||.  \    /:  | \        /   
+(__|  \__)(__\_|_)\_______)     \__|    \_______)|___|\__/|___|  \"_____/    
+```
 
-The agent is designed around a simple principle: *The AI should understand the physical situation, not be told the answer.*
+## About
 
-Agents receive observations derived from the environment—such as positions, velocities, trajectories, and spatial relationships—while higher-level semantic information can be deliberately withheld. A fast neural controller handles real-time movement and decision-making. An asynchronous reasoning layer can analyze accumulated behavior, coordinate multiple agents, develop strategies, and propose new actions or attack variants. All generated behavior is constrained by the underlying physics and the agent's physical capabilities.
+**Kietemo** is an experimental Unreal Engine project heavily inspired by my love for FPS and survival games, the combat and progression systems of games such as *Sekiro*, Japanese samurai manga such as *Vagabond* and *The Blade of the Immortal*, and Japanese folklore surrounding Yokai.
 
-## Rules and Expectation
-- **No access to hidden game semantics**: AI are scored based on its ability to interpret and counter stochastic adversarial decisions under realistic conditions. For example, AI must not have access to information such as when enemies perform a certain attack, the rules/statistics of attacks, preset attacks, etc. The only information it should have access to are its visual (joint location, geometric position, etc) and auditory senses.
-- **Strict latency budgets**: Every evaluation must define and record timestamps for inferring events such as observation or action transmission, until physical response. Computational time must be computed and will be stress-tested against opponent with increasingly faster reaction time/attacks.
-- **AI must operate under strict, physics constraints.**
-     - AI cannot reposition any body parts where every body movement/customized attacks must obey maximum velocity, acceleration, force, torque and other defined actuation limits.
-     - Anatomical constraints must be enforced where joints have positional limits (angular velocity) and the segment lengths must remained fixed unless deformation is explicitly part of the model.
-     - Center-of-mass and support constraints are accounted. Foot placement, ground contact, friction and body stability must affect movement.
-     - All relevant body parts must use physically consistent collision geometry. It cannot be selectively disabled to make learned behavior succeed.
-- **Attack generation**: Procedurally generated or LLM-generated attacks must be validated against same physical constraints as manually authored attacks. All attacks must exist as executable physical trajectories and geometrical sequences. Generated behaviors must pass simulation before being admitted into executable action library.
-- **Stochastic adversaries**: Opponents must contain meaningful stochasticity in timing, movement, attack selection, and combinations. Randomness must not be reduced to selecting from fixed deterministic sequence. Adversary must be capable of producing combos and timing patterns. Random seeds must still be used for evaluation. Adversaries must also be capable of changing behaviors.
-- **Sensor limitations/information leakage**: Internal processing, event dispatch, animation state, network messages and other implementation details must not unintentionally reveal hidden attack information through observation timing. Due to sensor limitations, observation noise, precision, update frequency, occlusion, FOV and latency should be explicitly configurable, accounting for imperfect sensing.
-- **Logic reasoning and Multi-Agent communication**: Under severe disadvantages, implementation of game theory and communication is mandated as part of research. For example, when overwhelmed by enemies the agent must be capable of communication (with information-sharing boundary) with instances of itself (asynchronous LLMs proposing strategies, attack variants, or coordination plans). Other example, when an enemy has a gun (absolute advantage), the agent should be capable of critical thinking (based on physical constraints its impossible to win) and could figure out other approaches.
-- Reproducibility and Benchmarks: Every benchmark result must specify model version, physics parameters, and other configurations. For each test, it must evaluate against a baseline comparison.
+The project began during COVID as a personal attempt to combine these influences into a large-scale survival horror game.
 
-## Performance Metrics
-- Win rate: How often it wins in adversarial conditions
-- Defense rate: How often it is able to survive in adversarial conditions (Even if it did not win)
-- Action latency or Time to Response (TTR): Latency evaluation against baseline of competitors.
-- Energy expenditure: How much energy is spent for each condition
-- Generalization Performance against unseen adversarial behavior
-- Catastrophic failure rate
+Kietemo was originally developed in **Unreal Engine 4** and later ported to **Unreal Engine 5**. Development was eventually abandoned as the scope of the project grew beyond what my hardware and available time could support.
 
-# Development Status
+The original project also became difficult to recover due to Unreal Engine's rapid version changes and my limited understanding of source control at the time. The original GitHub history is therefore relatively sparse, and the project no longer builds cleanly in its original state.
 
-TACTA is initially being developed for sparring and physical training, with potential applications across civilian, professional, research, and defense environments. The same underlying platform can be used to study how intelligent agents perceive threats, anticipate physical actions, coordinate with other agents, and operate within realistic physical limitations.
+Rather than treating the project as lost, I am revisiting it as a **technical revival**: reconstructing the systems that made the original project interesting, modernizing the implementation, and documenting what I learned from the original development process.
 
-TACTA Simulation is still an early-stage research and development project. The current focus is building the underlying simulation environment, physically constrained combat behaviors, observation/action interfaces, and learning infrastructure required for adaptive agents.
+## Combat
 
-TACTA Intelligence
-Adaptive Physical Intelligence
+Combat was heavily inspired by **Sekiro** and other timing-focused melee games.
+
+The goal was to make fighting dangerous rather than simply reducing combat to health-bar management.
+
+The original implementation was primarily developed using **Unreal Engine Blueprints**, with experimentation around responsive melee interactions, enemy behavior, and player combat states.
+
+The intention was for different enemy classes to require different approaches rather than allowing one universal combat strategy.
+
+---
+
+# Engineering Highlights
+
+## Procedural Terrain Generation
+
+One of the primary technical systems is procedural world generation.
+
+**Perlin noise** is used to generate terrain and influence the distribution of environmental features.
+
+The original implementation was written in **C++** and was intended to support the generation of large, potentially continuous territories.
+
+The system was experimented with for:
+
+* terrain height generation;
+* environmental variation;
+* structure placement;
+* regional differences;
+* and creating the illusion of a much larger world from procedural rules.
+
+This was one of my earliest experiments with procedural generation and eventually became one of the reasons I became interested in the technical side of game development.
+
+---
+
+## Unreal Engine / C++
+
+The project combines **C++ and Unreal Engine's gameplay framework** with Blueprint-based gameplay systems.
+
+C++ was primarily used where lower-level control and procedural computation were useful, while Blueprints were used extensively for gameplay logic and rapid iteration.
+
+This hybrid approach allowed me to experiment quickly while still learning how Unreal's native systems interacted with higher-level gameplay logic.
+
+---
+
+## Blueprint Combat Systems
+
+The combat system was implemented primarily through Blueprints.
+
+The original goal was to experiment with:
+
+* attack states;
+* enemy reactions;
+* timing-based combat;
+* player/enemy interactions;
+* animation-driven gameplay;
+* and combat behavior inspired by Sekiro.
+
+Because the project was developed while I was still learning Unreal Engine, many of these systems are experimental rather than production-ready.
+
+---
+
+# Technical Revival
+
+The current goal of this repository is **not simply to restore the original project exactly as it existed**.
+
+The original project relied on an older Unreal Engine version and has accumulated compatibility issues over time.
+
+The revival therefore focuses on:
+
+* identifying which original systems can be recovered;
+* reconstructing systems that can no longer be directly recovered;
+* updating obsolete Unreal Engine implementations;
+* improving project organization;
+* documenting technical decisions;
+* and rebuilding important systems using modern Unreal Engine practices.
+
+The original implementation is preserved where practical so that the evolution of the project can be understood.
+
+---
+
+# What I Learned
+
+Kietemo was one of my earliest attempts at building a large-scale game system.
+
+It taught me several lessons that were difficult to appreciate while I was developing it:
+
+* **Scope matters.** A game can become technically impossible to maintain long before the individual systems become difficult.
+* **Source control matters.** Keeping a project in a working state is as important as writing the code itself.
+* **Engine versions matter.** Large engine migrations can invalidate assumptions throughout an entire project.
+* **Procedural generation requires careful design.** Generating a large world is considerably easier than generating one that is interesting.
+* **Architecture matters.** Rapid prototyping can create significant technical debt when a project grows.
+* **Documentation matters.** Years later, undocumented systems become significantly harder to understand and recover.
+
+This revival is therefore also an opportunity to revisit some of my earliest engineering decisions and see how I would approach the same problems today.
+
+---
+
+# Status
+
+**Project status: Revival / Experimental**
+
+The original project is no longer fully functional in its original Unreal Engine environment.
+
+The current work focuses on selectively recovering and modernizing the most interesting systems rather than attempting to restore the entire original game at once.
+
+### Planned / Experimental Systems
+
+* [ ] Modernize procedural terrain generation
+* [ ] Rebuild Perlin noise implementation
+* [ ] Reconstruct procedural structures
+* [ ] Rebuild combat systems
+* [ ] Revisit enemy AI
+* [ ] Reconstruct spiritual starvation system
+* [ ] Experiment with dynamic world regions
+* [ ] Improve project architecture
+* [ ] Document technical implementations
+* [ ] Produce playable prototypes of recovered systems
+
+---
+
+# Keywords
+
+**Unreal Engine · C++ · Blueprints · Procedural Generation · Perlin Noise · Game Development · Survival Horror · FPS · Samurai · Yokai · Japanese Folklore**
